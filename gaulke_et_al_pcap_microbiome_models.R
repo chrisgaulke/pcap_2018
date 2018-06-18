@@ -472,6 +472,7 @@ rownames(burden_by_genus$coef) <- c("abd_est",
 #how many slopes are positive (1), and negative (0)
 table(as.numeric(ifelse(burden_by_genus$coef[1,] > 0 , TRUE, FALSE)))
 
+#get coeff
 coef.df <- cbind(melt(t(burden_by_genus$coef[1:3,])),
                  melt(t(burden_by_genus$coef[4:6,]))[,2:3])
 
@@ -723,6 +724,8 @@ rownames(genus.nbglmm$conv_fixed_coef) <- c("intercept_est",
                                             "burden_pval",
                                             "histopath_pval",
                                             "histo_burden_int_pval")
+
+
 
 #melt into a df for ggplot
 genus_coef.df <- cbind(melt(t(genus.nbglmm$conv_fixed_coef[1:6,])),
@@ -1129,7 +1132,7 @@ burns_abd.df$exposure <- wt_mod.df$Exposure
 wilcox.test(as.numeric(burns_abd.df$abundance) ~
               burns_abd.df$exposure)
 
-# Examine correaltion between burns clade mycoplasma and hyperplasia
+# Examine correlation between burns clade mycoplasma and hyperplasia
 
 burns_abd.kendall <-
   cor.test(as.numeric(burns_abd.df$abundance),

@@ -413,13 +413,18 @@ kruskal.test(list(with_kb[upper.tri(with_kb)],
 pairwise.wilcox.test(c(with_kb[upper.tri(with_kb)],
                           within_fish[upper.tri(within_fish)],
                           unlist(btwn_fish_kb)
-                          )
+                       )
+
+
 , g = c(rep("within kb",
             times =    length(with_kb[upper.tri(with_kb)])),
          rep("within fish",
              times = length(within_fish[upper.tri(within_fish)])),
          rep("btwn fish:kb",
              times = length(unlist(btwn_fish_kb))))
+,
+p.adjust.method = "bonf"
+
 )
 
 # group means tax
@@ -874,10 +879,32 @@ pcap_adonis_f8 <- adonis(tdata ~ tmetadata[,4] *
                            tmetadata[,17],
                          permutations = 5000)
 
-
 # Full model
 
 pcap_adonis_f8
+
+#holm correction
+
+p.adjust(pcap_adonis_f8$aov.tab$`Pr(>F)`, method = "holm")
+
+pcap_adonis_f8.adj <- cbind(pcap_adonis_f8$aov.tab,
+      p.adj = p.adjust(pcap_adonis_f8$aov.tab$`Pr(>F)`, method = "holm")
+    )
+
+rownames(pcap_adonis_f8.adj) <- c(
+  "Exposure",
+  "DPE",
+  "Sex",
+  "Condition Factor",
+  "Total Burden",
+  "Tank",
+  "Total histopath",
+  "Exposure:DPE",
+  "Residuals",
+  "Total"
+)
+
+pcap_adonis_f8.adj
 
 # Individual models
 
@@ -951,6 +978,14 @@ wilcox.test(tmetadata.exp$Total ~ tmetadata.exp$Sex)
 # Next we determine if sex is evenly distributed amongst treatment groups and
 # days.
 aggregate(Sex ~ Exposure + DaysPE, data = tmetadata, table)
+
+aggregate(Sex ~ Exposure, data = tmetadata, table)
+
+#Same question for length of fish
+
+aggregate(Length_.mm. ~ Exposure, data = tmetadata, mean)
+
+aggregate(Length_.mm. ~ Exposure, data = tmetadata, sd)
 
 
 
