@@ -518,7 +518,7 @@ pcap_microbiome.shannon <- data.frame(shannon = pcap_microbiome$shannon,
                             time = pcap_microbiome$meta[,"DaysPE"],
                             exposure = pcap_microbiome$meta[,"Exposure"],
                             burden = pcap_microbiome$meta[,"Total"],
-                            hist_total = pcap_microbiome$meta$histo_total,
+                            hist_total = pcap_microbiome$meta$hist_total,
                             cond_fac  = pcap_microbiome$meta$condition_factor)
 
 # To determine if micorbiome alpha diversity is influenced by any of the
@@ -700,6 +700,73 @@ pcap_mds +
   scale_colour_manual(values=c(darkcols))+
   coord_fixed()
 
+pcap_mds +
+  geom_point(size =4)+
+  theme(text = element_text(size=20, colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(colour = "black"),
+        legend.key = element_blank(),
+        legend.title = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)
+  )+
+  scale_colour_manual(values=c(darkcols))+
+  coord_fixed()
+
+#split ordination
+
+pcap_mds_unexposed <- ggplot(
+  subset.data.frame(pcap_microbiome$mds$df, group == "Unexposed"),
+  aes(x = MDS1,
+  y = MDS2,
+  color = as.factor(day),
+  shape = group
+)
+)
+
+
+pcap_mds_unexposed +
+  geom_point(size =4, shape = 17)+
+  theme(text = element_text(size=20, colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(colour = "black"),
+        legend.key = element_blank(),
+        legend.title = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)
+  )+
+  scale_colour_manual(values=c(darkcols))+
+  coord_fixed()
+
+
+
+pcap_mds_exposed <- ggplot(
+  subset.data.frame(pcap_microbiome$mds$df, group == "Exposed"),
+  aes(x = MDS1,
+      y = MDS2,
+      color = as.factor(day),
+      shape = group
+  )
+)
+
+pcap_mds_exposed +
+  geom_point(size =4)+
+  theme(text = element_text(size=20, colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(colour = "black"),
+        legend.key = element_blank(),
+        legend.title = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1)
+  )+
+  scale_colour_manual(values=c(darkcols))+
+  coord_fixed()
 
 # Ordination by hist
 
@@ -969,6 +1036,7 @@ parasite_prev.plot +
   ylab("Prevalence (Exposed)") +
   scale_y_continuous(labels = scales::percent)
 
+
 # Microbiome sex and burden -----------------------------------------------
 
 # Quantify the effect of sex on burden.
@@ -1002,6 +1070,10 @@ fish_wt <- ggplot(subset.data.frame(pcap_worm_counts, DaysPE != 0),
                       )
                   )
 )
+
+
+summary(lm(Weight_.mg. ~ Exposure + DaysPE + Sex, data = pcap_worm_counts ))
+
 
 fish_wt +
   geom_boxplot()+
@@ -1257,7 +1329,7 @@ total_histo.df <- tmetadata[
 
 total_histo.plot <- ggplot(total_histo.df,
                            aes(x = factor(DaysPE),
-                               y = histo_total))
+                               y = hist_total))
 
 total_histo.plot +
   geom_boxplot(fill = "#4D648D")+
@@ -1301,7 +1373,6 @@ fish_cf +
   ylab("Condition Factor") +
   scale_fill_manual(values = c("#217CA3", "#D24136"))+
   scale_y_continuous(expand = c(0,0.05))
-
 
 
 # Phylotyping -------------------------------------------------------------
